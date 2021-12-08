@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>async和await</title>
+</head>
+<body>
+  <script type="text/javascript">
+  // https://segmentfault.com/a/1190000007535316
+  // 1.语法规定，await 只能出现在 async 函数中。
+  /*
+    async function testAsync1(){
+      return '异步函数'
+    }
+    const result = testAsync1()
+    //打印输出的是promise对象
+    console.log(result);*/
+
+    // 结论：async 函数返回的是一个 Promise 对象。如果在函数中 return 一个直接量，
+    // async 会把这个直接量通过 Promise.resolve() 封装成 Promise 对象。
+    
+    // 2.await 到底在等啥（等待一个表达式）
+    /*
+    function getSomething() {
+      return "something";
+    }
+
+    async function testAsync() {
+        // 返回的是直接值的话不写Promise.resolve也行，async会自动封装
+        return Promise.resolve("hello async");
+    }
+
+    async function test() {
+        const v1 = await getSomething();
+        const v2 = await testAsync();
+        console.log(v1, v2);
+    }*/
+    /*
+    如果它等到的不是一个 Promise 对象，那 await 表达式的运算结果就是它等到的东西。
+
+如果它等到的是一个 Promise 对象，await 就忙起来了，它会阻塞后面的代码，
+等着 Promise 对象 resolve，然后得到 resolve 的值，作为 await 表达式的运算结果。
+
+看到上面的阻塞一词，心慌了吧……放心，这就是 await 必须用在 async 函数中的原因。
+async 函数调用不会造成阻塞，它内部所有的阻塞都被封装在一个 Promise 对象中异步执行。
+    */
+    // test();
+
+    function takeLong(){
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve('2秒后');
+        },2000)
+      });
+    }
+    async function test(){
+      const result = await takeLong();
+      console.log(result);
+      console.log(111);
+    }
+    test();
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //js想实现继承的目的：重复利用一个对象的属性和方法
+        
+        //一、原型式继承的核心函数
+        function object(o) {
+            //定义一个构造函数
+            function F() {};
+            //将传递的对象作为构造函数的原型
+            F.prototype = o;
+            //返回一个实例
+            return new F();
+        }
+
+
+        //使用原型式继承
+        var person = {
+            name:'hjp',
+            colors:['red','green']
+        }
+        //通过person去创建另外一个对象
+        var p1 = object(person);
+        console.log(p1);
+        p1.name = 'kobe';
+        console.log(p1.hasOwnProperty("name"));
+        // p1.colors.push('blue');
+        // console.log(p1.name);
+        // console.log(p1.colors);
+        // console.log(person.name);
+        // console.log(person.colors);
+
+        //分析：
+        /*
+        （1）p1中继承过来的属性是放在了自己的原型对象中
+        （2）也可以给p1自己再次添加name属性，这时候name才是实例本身的
+        （3）如果对引用值进行修改，还是会引起连锁反应
+        */
+
+
+        //针对这种思想, ES5中新增了Object.create()方法来规范化了原型式继承.
+         //使用原型式继承
+        // var person = {
+        //     name:'hjp',
+        //     colors:['red','green']
+        // }
+        // //通过person去创建另外一个对象
+        // var p1 = Object.create(person);
+        // /* 还可以有第二个参数 比如person1的name我们希望修改成"Kobe"
+        // var p1 = Object.create(person，{
+        //     name:{
+        //         value:'kobe'
+        //     }
+        // });
+        // */
+        // p1.name = 'Kobe';
+        // p1.colors.push('blue');
+        // console.log(p1.name);
+        // console.log(p1.colors);
+        // console.log(person.name);
+        // console.log(person.colors);
+
+        //原型式继承的优缺点
+        /*
+        （1）如果我们只是希望一个对象和另一个对象保持类似的情况下, 原型式继承完全可以胜任, 这是它的优势.
+        （2）但是, 原型式继承依然存在属性共享的问题, 就像使用原型链一样.
+        */
+
+        //二、寄生式继承
+        /*
+        （1）寄生式继承的思路是结合原型式继承和工厂模式的一种方式
+        （2）即创建一个封装继承过程的函数, 该函数在内部以某种方式来增强对象, 最后再将这个对象返回.
+        */
+       
+        //封装object函数
+        // function object(o) {
+        //     function F() {};
+        //     F.prototype = o;
+        //     return new F();
+        // }
+        // //封装创建新对象的函数
+        // function createAnother(original) {
+        //     var clone = object(original);
+        //     clone.sayHello = function() {
+        //         console.log('Hello Js');
+        //     }
+        //     return clone;
+        // }
+        // //寄生式继承的应用
+        // var person = {
+        //     name:'hjp',
+        //     colors:['red','blue']
+        // }
+        // //新的对象
+        // var p1 = createAnother(person);
+        // p1.sayHello();
+        // p1.colors.push('green');
+        // console.log(p1.colors);
+        // var p2 = createAnother(person);
+        // console.log(p2.colors);
+
+
+        /*寄生式继承的问题
+        （1）引用类型会共享
+        （2）函数无法复用的问题  每次createAnother都要定义新的函数
+        */
+
+        //寄生组合式继承的思想
+        
+        /*回顾一下组合继承的问题
+        （1）会创建两次父类的构造函数，一次是在创建子类原型的时候 Animal.call(this)
+             一次是在new实例的时候;
+         (2) 子类实例事实上有两份父类的属性，一份在原型对象中，一份在子类实例中
+        */
+
+        // 事实上, 我们现在可以利用寄生式继承将这两个问题给解决
+        /*
+        （1）你需要先明确一点: 当我们在子类型的构造函数中调用父类型.call(this, 参数)这个函数的时候, 
+            就会将父类型中的属性和方法复制一份到了子类型中. 所以父类型本身里面的内容, 我们不再需要.
+       （2）这个时候, 我们还需要获取到一份父类型的原型对象中的属性和方法.
+            能不能直接让子类型的原型对象 = 父类型的原型对象呢?
+       （3）不要这么做, 因为这么做意味着以后修改了子类型原型对象的某个引用类型的时候, 父类型原生对象的引用类型也会被修改.
+            我们使用前面的寄生式思想就可以了.
+        */
+       
+        //寄生组合式的核心代码
+        //定义object函数
+        function object(o) {
+            function F() {};
+            F.prototype = o;
+            return new F();
+        }
+        //定义寄生式核心函数  目的让Person获得Animal原型对象的方法和属性
+        function inheritPrototype(subType,superType) {
+            //这个实例的原型对象是父类的原型  相当于Animal的原型
+            var prototype = object(superType.prototype);
+            //实例的constructor属性指向subType 相当于Person
+            prototype.constructor = subType;
+            //Person的原型就是这个实例
+            subType.prototype = prototype;
+        }
+
+        //寄生组合式继承的应用
+        // function Animal(age) {
+        //     this.age = age;
+        //     this.colors = ['red','green']
+        // }
+        // //给Animal添加方法
+        // Animal.prototype.animalFunction = function() {
+        //     console.log('Hello Animal');
+        // }
+        // //定义Person构造函数
+        // function Person(name, age) {
+        //     Animal.call(this,age);
+        //     this.name = name;
+        //     this.books = ['aaa'];
+        // }
+        // //使用寄生组合函数
+        // inheritPrototype(Person,Animal);
+        // //给Person添加方法
+        // Person.prototype.personFunction = function() {
+        //     console.log("Hello Person");
+        // }
+        // var p1 = new Person('hjp',21);
+        // p1.colors.push('black');
+        // p1.books.push('bbb');
+        // console.log(p1.colors);
+        // console.log(p1.books);
+        // p1.animalFunction();
+        // p1.personFunction();
+        // var p2 = new Person('lqh',20);
+        // console.log(p2.colors);
+        // console.log(p2.books);
+        //寄生组合的优点
+        /*
+        （1）只调用了一次Animal的构造函数
+        （2）避免了在原型上面多出的多余属性，子类型原型和父类型原型之间也不会有干扰
+        */
+        
+    </script>
+</body>
+</html>

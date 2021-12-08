@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  <!--
+      同源政策：
+        XmlHttpRequest(ajax) 不允许ajax向除了自己以外的网站发送请求
+      同源：多个请求或者页面是否来自同一个服务器端
+            协议，域名，端口都相同
+      同源政策的目的：
+        为了保证用户的信息安全，B网站不能访问A网站的cookie
+        其实，请求能够发送出去，只是浏览器拒绝接受服务器返回来的结果。
+      解决：
+        方法1：jsonp（发送的不是ajax请求）
+        （1）绕过浏览器的同源政策的限制，向服务器发送请求。
+        利用<script src="www.baidu.com"></script>中的src属性，因为它不受同源政策的影响，注意：返回的内容是要作为js的代码来执行的。
+        （2）服务器的返回数据必须是一个函数调用。
+        真正要返回的数据需要作为函数调用的参数
+        （3）客户端需要在全局作用域下定义好这个函数，并且在<script>这个标签前定义。
+        
+        方法2：CORS 跨域资源共享（发送的是ajax请求）
+        概述：在服务器端进行一个配置，服务器端允许谁访问它，谁就可以访问它。
+        （1）客户端向服务器端发送请求的时候会携带请求头（origin协议+主机+端口号）
+        （2）服务器允许客户端访问的话，就会返回一个响应头(Access-Control-Access-Origin)
+         (3)服务器中的代码
+         app.get('/cross',(req,res)=>{
+             //允许哪些客户端访问我  *表示所有客户端
+             res.header("Access-Control-Allow-Origin","*");
+             //对应的请求方法
+             res.header("Access-Control-Allow-Methods","get");
+         })
+
+         方法3：跨过浏览器的同源政策  
+         （1）过程
+         服务器1 访问 服务器2，然后客户端1直接去服务器1拿数据就可以了
+         （2）服务器端安装request(npm install)
+         request('url',(error,response,body)=>{
+             res.send(body);就是返回的数据
+         })
+        -->  
+
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>this指向的问题</title>
+</head>
+<body>
+    <script>
+        //this是js的一个关键字 this会在执行上下文context中绑定一个对象
+        /*
+        1.this指向什么？
+        （1）this在全局作用域下指向什么？   
+            window,但是开发中很少在全局作用域下使用this,通常都是在函数中使用。
+        （2）所有的函数在被调用的时候，都会创建一个执行上下文context。
+             这个上下文记录着函数的调用栈，函数的调用方式，传入的参数信息等。
+             this也是其中的一个属性
+        */
+
+       function foo() {
+           console.log(this);
+       }
+       //1.直接调用
+       foo();
+       //2.放在一个对象中,再调用对象的方法
+       var obj = {
+           name:'hjp',
+           foo:foo
+       }
+       obj.foo();
+       //3.通过apply,call方式调用
+       foo.call("abc");
+       
+       /*
+       上面案例的总结：
+       （1）函数在调用的时候，JS会默认给this绑定一个值。
+       （2）this的绑定和定义的位置没有关系。
+       （3）this的绑定和 调用方式 以及 调用的位置 有关系
+       */
+
+       /*
+       2.this绑定规则
+       （1）默认绑定
+            通常默认绑定时，函数中的this就是window
+            什么时候使用默认绑定呢？独立函数调用。
+            独立函数就是没有被绑定到对象上的函数。
+       */
+        //普通调用
+    //     function foo() {
+    //        console.log(this);
+    //     }
+    //     foo();
+
+    //     //函数调用链（一个函数又调用另外一个函数）
+        // function test1() {
+        //     console.log(this);
+        //     test2();
+        // }
+        // function test2() {
+        //     console.log(this);
+        // }
+        // test1();// window  window
+
+    //     //将函数作为参数，传入到另一个函数中
+    //     function foo(func) {
+    //         func();
+    //     }
+        // function bar() {
+        //     console.log(this);//window
+        // }
+    //     foo(bar);
+    //    //对上面的方法进行改进
+        // var obj = {
+        //     name:'hjp',
+        //     bar:bar
+        // }
+        // foo(obj.bar);//window  
+        /*
+        原因是this的绑定只跟调用的位置和调用的方式有关
+        真正函数调用的位置，任然是一个独立函数
+        */ 
+
+        /*
+        （2）隐式绑定
+        另外一种方式就是通过某个对象进行调用的
+        也就是它的调用位置中，是通过某个对象发起的函数调用
+        */
+        // function foo() {
+        //    console.log(this);
+        // }
+       //1.直接调用
+    //    foo();
+    //    //2.放在一个对象中,再调用对象的方法
+    //    var obj = {
+    //        name:'hjp',
+    //        foo:foo
+    //    }
+    //    obj.foo();//obj
+    //    var obj1 = {
+    //        name:'obj1',
+    //        foo:foo
+    //    }
+    //    var obj2 = {
+    //        name:'obj2',
+    //        obj1:obj1
+    //    }
+    //    obj2.obj1.foo();//obj1
+
+       //3.隐式丢失
+    //    function foo() {
+    //        console.log(this);
+    //    }
+    //    var obj1 = {
+    //        name:'obj1',
+    //        foo:foo
+    //    }
+    //    var bar = obj1.foo;
+    //    bar();//window   因为foo最终被调用的位置是bar,而bar在进行调用时没有绑定任何的对象，也就没有形成隐式绑定
+       
+       //3.显示绑定 (如果传入的是null,undefined会被忽略)
+       /*
+       隐式绑定有一个前提条件：
+       （1）必须在调用的对象内部有一个对函数的引用，比如说是一个属性foo
+       （2）正是通过这个引用，间接的将this绑定到了这个对象上
+
+       显示绑定：明确地绑定了this指向的对象
+       （1）如果我们不希望这个对象内部包含这个函数引用，同时又希望在这个对象上强制执行，怎么办呢？
+       （2）可以通过call和apply方法
+       （3）这两个方法的第一个参数是一样的（对象），后面的参数，apply为数组，call为参数列表
+       （4）在调用这个函数时，会将this绑定到这个对象上。
+       */
+    //   function foo() {
+    //       console.log(this);
+    //   }
+    //   foo.call(window);
+    //   foo.call({name:'hjp'});
+    //   foo.call(123);
+
+       /*
+       （5）bind函数
+       如果我们希望一个函数总是显示的绑定到一个对象上，怎么办呢？
+        bind函数      
+       */
+      //手写一个bind的辅助函数
+    //   function foo() {
+    //       console.log(this);
+    //   }
+    //   var obj = {
+    //       name:"why"
+    //   }
+    //   function bind(func,obj) {
+    //     return function() {
+    //         return func.apply(obj,arguments);
+    //     }
+    //   }
+    //   var bar = bind(foo,obj);
+    //   bar();//obj
+
+      //Function.prototye.bind
+    //   var bar = foo.bind(obj);
+    //   bar();//obj
+    //   foo();//window
+
+      //4.内置函数
+      //（1）setTimeout
+    //   setTimeout(() => {
+    //       console.log(this);//window
+    //   },1000);
+      /*
+      为什么是window？
+      （1）setTimeout内部是通过apply进行绑定的this对象，并且绑定的是全局对象
+      */
+      
+      //(2)数组的forEach函数
+      // var names = ['a','b','c'];
+      // names.forEach(item => {
+      //     console.log(this);//三次window
+      // });
+      // names.forEach(item => {
+      //     console.log(this);//三次obj
+      // },obj);
+      
+      //(3)div的点击  点谁this就是谁
+
+      //（4）new 绑定
+      /*
+      1.创建一个全新的对象
+      2.这个新对象和构造函数的prototype 连接
+      3.这个新对象会绑定到函数调用的this上
+      4.如果构造函数没有返回其他对象，表达式会返回这个新对象
+      */
+    //   function Person(name) {
+    //       console.log(this);//Person{}
+    //       this.name = name;
+    //   }
+    //   var p = new Person('hjp');
+
+      //5.规则优先级
+    //   默认规则的优先级 < 隐式绑定 < 显示绑定（bind） < new 绑定
+
+    //6.箭头函数  箭头函数没有自己的this，它的this是继承(继承上一个作用域)而来，默认指向在定义它时所处的对象(宿主对象)。
+    //面试题1
+    // var name = 'window';
+    // var person1 = {
+    //     name:'person1',
+    //     foo1:function() {
+    //         console.log(this.name);
+    //     },
+    //     foo2:() => {
+    //         console.log(this.name);
+    //     },
+    //     foo3:function() {
+    //         return function() {
+    //             console.log(this.name);
+    //         }
+    //     },
+    //     foo4:function() {
+    //         return () => {
+    //             console.log(this.name);
+    //         }
+    //     }
+    // }
+    // var person2 = {name:'person2'}
+    // person1.foo1();//person1  隐式绑定 通过person1来调用
+    // person1.foo1.call(person2);//person2 显式绑定 相当于把person1的foo1这个函数放在person2中执行
+
+    // person1.foo2();//window   箭头函数向上一层作用域找  箭头函数就是第一层 再往上就是window
+    // person1.foo2.call(person2);//window  箭头函数不被显示绑定所影响
+
+    // person1.foo3()();//window 拿到最里面的函数在全局作用域下执行
+    // person1.foo3.call(person2)();//window  在全局作用域下执行 把foo3()放进person2中执行 foo3()返回的又是一个函数
+    // person1.foo3().call(person2);//person2 相当于把foo3最里层的函数放入person2执行
+
+    // person1.foo4()();//person1 向上一层找
+    // person1.foo4.call(person2)();//person2
+    // //箭头函数在执行的时候不会被改变this
+    // person1.foo4().call(person2);//person1  箭头函数只看上一层 显示绑定无效
+
+
+    //面试题2
+    // var name = 'window'
+    // function Person (name) {
+    //     this.name = name
+    //     this.foo1 = function () {
+    //         console.log(this.name)
+    //     },
+    //     this.foo2 = () => console.log(this.name),
+    //     this.foo3 = function () {
+    //         return function () {
+    //         console.log(this.name)
+    //         }
+    //     },
+    //     this.foo4 = function () {
+    //         return () => {
+    //         console.log(this.name)
+    //         }
+    //     }
+    // }
+    // var person1 = new Person('person1')
+    // var person2 = new Person('person2')
+
+    // person1.foo1()//person1
+    // person1.foo1.call(person2)//person2
+
+    // person1.foo2()//person1
+    // person1.foo2.call(person2)//person1
+
+    // person1.foo3()()//window
+    // person1.foo3.call(person2)()//window
+    // person1.foo3().call(person2)//person2
+
+    // person1.foo4()()//person1
+    // person1.foo4.call(person2)()//person2
+    // person1.foo4().call(person2)//person1
+
+    //面试题3
+    // var name = 'window'
+    // function Person (name) {
+    //     this.name = name
+    //     this.obj = {
+    //         name: 'obj',
+    //         foo1: function () {
+    //             return function () {
+    //                 console.log(this.name)
+    //             }
+    //         },
+    //         foo2: function () {
+    //             return () => {
+    //                 console.log(this.name)
+    //             }
+    //         }
+    //     }
+    // }
+    // var person1 = new Person('person1')
+    // var person2 = new Person('person2')
+
+    // person1.obj.foo1()() //window
+    // person1.obj.foo1.call(person2)() //window
+    // person1.obj.foo1().call(person2) //person2
+
+    // person1.obj.foo2()() //obj
+    // person1.obj.foo2.cal
+    l(person2)() //person2
+    // person1.obj.foo2().call(person2) //obj
+
+
+    /*总结：
+    （1）默认调用 全局 this => window
+    （1）隐式调用，绑定给某个对象的属性 this就是这个对象
+    （2）显式调用  apply call bind 改变了this的指向 但是箭头函数不被影响
+    （3）在用显示调用的时候，注意是把什么().call()给谁执行了
+    （5）作用域：全局作用域和局部作用域
+    （6）箭头函数中的this是继承自上一个作用域的
+    */
+   </script>
+</body>
+</html>

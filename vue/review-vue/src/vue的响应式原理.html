@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vue的响应式原理</title>
+</head>
+<body>
+  <div id="app">{{message}}</div>
+  <script src="../node_modules/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el:"#app",
+      data:{
+        message:'你好啊'
+      }
+    }); 
+  </script>
+  <script>
+    /*
+    1.首先我们来思考两个问题？
+    （1）vue是怎么监听到我们数据的改变的？
+    --- 通过Object.defineProperty()来监听属性的变化;在get方法里，dept收集依赖，
+        在set方法里,dept发布更新通知
+    （2）vue怎么知道哪些地方用到了数据
+    --- 发布订阅的模式，一个data属性对应一个dept,dept是用来收集依赖的对象，用一个数组
+        来收集，而数组里面的对象就是一个一个的监听者watcher,当监听到数据发生变化时，
+        dept通知watcher进行更新，然后watcher更新数据，重新渲染视图。
+      上述的事情就是在observer中完成的。
+    */
+   // 发布订阅模式
+   // 发布者
+   class Dep{
+     constructor(){
+       this.subs = []
+     }
+     // 添加订阅者者
+     addSub = (watcher) => {
+       this.subs.push(watcher)
+     }
+     // 通知
+     notify = () => {
+       this.subs.forEach(item => {
+         item.update();
+       });
+     }
+   }
+   // 订阅者
+   class Watcher {
+     constructor(){
+       this.name = name;
+     }
+     // 更新
+     update = () => {
+       console.log(this.name+"更新了数据视图");
+     }
+   }
+   const obj = {
+     name:'HJP',
+     message:"welcome to cvte"
+   }
+   //监听属性值的变化
+   Object.keys(obj).forEach(key => {
+     //拿到当前项的值
+     let value = obj[key];
+     //每一个属性都有一个单独的dep
+     const dep = new Dep();
+     // 对该属性进行监听
+     Object.defineProperty(obj, key, {
+       get(){
+         //只要是用到了value 的地方都会有一个监听者 用于更新数据以及视图
+         const watcher = new Watcher(key);
+         dep.addSub(watcher);
+         console.log("获取了"+key+"的值："+value);
+         return value;
+       },
+       set(newValue){
+         if(value === newValue){
+           return ; 
+         }
+         dep.notify();
+         console.log("更新了"+key+"的值："+newValue)
+         value = newValue;
+       }
+     })
+   })
+   
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid布局</title>
+  <style>
+      * {
+            margin: 0;
+            padding: 0;
+        }
+
+        img {
+            display: block;
+        }
+
+        .box {
+            width: 500px;
+            height: 400px;
+            margin: 40px auto;
+            /* 触发网格布局 */
+            display: grid;
+            grid-template-columns: repeat(3, 33.33%);
+            grid-template-rows: repeat(3, 150px);
+            grid-gap:30px 30px;
+        }
+
+        .item {
+            background: green;
+        }
+
+        .box div:nth-child(1) {
+            grid-column-start: 1;
+            /* 不包括3 */
+            grid-column-end: 3;
+        }
+
+        .box div:nth-child(4) {
+            grid-column-start: 2;
+            grid-column-end: 4;
+        }
+
+        .box div:nth-child(5) {
+            grid-column-start: 1;
+            grid-column-end: 3;
+        }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="item">
+        元素一
+    </div>
+    <div class="item">
+        元素二
+    </div>
+    <div class="item">
+        元素三
+    </div>
+    <div class="item">
+        元素四
+    </div>
+    <div class="item">
+        元素五
+    </div>
+    <div class="item">
+        元素六
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 统计字母的个数
+    const s = 'aaaabbbccccddfgh'
+    let obj = {}
+    for(let word of s){
+      if(obj[word]){
+        obj[word] = obj[word] + 1
+      }else{
+        obj[word] = 1
+      }
+    }
+    console.log(obj);
+
+    // 统计字母出现最多的次数
+    var max = 0;
+    for(let i in obj){
+      if(obj[i] > max){
+        max = obj[i];
+      }
+    }
+    console.log(max);
+
+    // 数组中有有多个对象 对这多个对象进行排序
+    var infoObj=[
+            {
+                name:"张三",
+                sex:'female',
+                age:30
+            },
+            {
+                name:"李四",
+                sex:'male',
+                age:20
+            },
+            {
+                name:"王五",
+                sex:'female',
+                age:40
+            }
+        ];
+        // 指定排序的比较函数
+    function compare(property){
+         return function(obj1,obj2){
+             var value1 = obj1[property];
+             var value2 = obj2[property];
+             return value1 - value2;     // 升序
+         }
+    }
+    var sortObj = infoObj.sort(compare("age"));
+  </script>
+</body>
+</html>

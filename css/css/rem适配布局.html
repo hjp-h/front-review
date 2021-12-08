@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rem适配布局</title>
+    <style>
+        /* @media说明是媒体查询 screen(属性) and(表示连接类型和特性的关系 还有not only) 特性*/
+        /* min-width 800px 最小是800px */
+       
+        @media screen and (max-width:499px){
+            body {
+                font-size: 15px;
+                background-color: yellow;
+            }
+        }
+        /* min-width:800px 最小是800px */
+        @media screen and (min-width:500px) and (max-width:799px){
+            body {
+                background-color: blue;
+            }   
+        }
+        @media screen and (min-width:800px){
+            body {
+                background-color: black;
+            }
+        }
+        html{
+            font-size:10px;
+        }
+        div{
+            width: 12rem;
+            height: 12rem;
+            background-color: purple;
+            /* font-size: 10px; */
+        }
+        p{
+            /* 1.em是相对于父元素字体大小设置 10em 就是父元素字体大小的10倍 */
+            /* width:10em;
+            height: 10em; */
+
+            /* 2.rem 是root em是相对于html字体大小设置的 */
+            /* 3.优点：可以通过修改html字体的大小 来控制页面的整体布局 */
+            width: 10rem;
+            height: 10rem;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <p>1234</p>
+    </div>
+</body>
+</html>

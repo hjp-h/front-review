@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>水平垂直居中</title>
+  <style>
+    #father{
+      width:380px;
+      height:380px;
+      background: red;
+      /*方案一： 定位*/
+      /* position: relative; */
+
+      /*方案二： flex*/
+      /* display:flex;
+      justify-content: center;
+      align-items: center; */
+
+      /*方案三：定位+margin*/
+      /* position: relative; */
+
+      /*方案四：table-cell布局*/
+      display: table-cell;
+      vertical-align:middle;
+    }
+    #son{
+      /*方案一： 定位*/
+      /* position:absolute;
+      top:50%;
+      left:50%;
+      transform: translate(-50%,-50%); */
+
+      /*方案三：定位+margin*/
+      /* position:absolute;
+      top:0;
+      bottom:0;
+      left:0;
+      right:0;
+      margin: auto; */
+
+      /*方案四：table-cell布局*/
+      margin: auto;
+      width:200px;
+      height:200px;
+      background: blue;
+    }
+  </style>
+</head>
+<body>
+  <div id="father">
+    <div id="son">
+    </div>
+  </div>
+</body>
+</html>

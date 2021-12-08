@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拖拽</title>
+	<style type="text/css">
+		* {
+			padding: 0px;
+			margin: 0px;
+		}
+		ul, ol, li {
+			list-style: none;
+		}
+		.main {
+			width: 100vw;
+			height: 100vh;
+			display: flex;
+		}
+		.main .left {
+			width: 199px;	
+			height: 100%;
+			border-right: 1px solid #000;
+		}
+		.main .left ul li {
+			height: 50px;
+			line-height: 50px;
+			text-align: center;
+		}
+		.main .right {
+			flex: 1;
+			position: relative;
+			overflow: hidden;
+		}
+		.main .right .contextmenu {
+			width: 100px;
+			height: 160px;
+			position: absolute;
+			top: -1000px;
+			left: 50px;
+			box-shadow: 0px 0px 2px 2px #e6e6e6;
+			line-height: 40px;
+			font-size: 14px;
+			color: #1a2a3a;
+			text-align: center;
+			cursor: pointer;
+			background-color: #fff;
+			user-select: none;
+			z-index: 999;
+		}
+		.main .right .contextmenu div:hover {
+			background-color: #eee;
+		}
+		.main .right .canvas {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+		}
+		.markLine {
+			animation-name: line;
+  			animation-duration: 2s;
+  			animation-fill-mode: forwards;
+		}
+		@keyframes line {
+  			to {
+  				width: 0px;
+  			}
+		}
+		.markBar{
+			animation-name: bar;
+  			animation-duration: 2s;
+  			animation-fill-mode: forwards;
+		}
+		@keyframes bar {
+  			to {
+  				height: 0px;
+  			}
+		}
+		.update {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 200px;
+			height: 150px;
+			padding: 10px;
+			border: 1px solid #000;
+			display: none;
+			background-color: #fff;
+		}
+		.update > div {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+		}
+		.update input {
+			width: 30%;
+			height: 30%;
+			padding-left: 5px;
+			box-sizing: border-box;
+		}
+		.update button {
+			height: 32px;
+			line-height: 32px;
+			width: 45%;
+		}
+	</style>
+</head>
+<body>
+	<div class="main">
+		<div class="left">
+			<ul id="drag">
+				<li class="drag" data-value="折线图">折线图</li>
+				<li class="drag" data-value="柱状图">柱状图</li>
+			</ul>
+		</div>
+		<div class="right" id="container">
+			<canvas class="canvas" id="canvas"></canvas>
+			<div id="contextmenu" class="contextmenu">
+				<div>放大</div>
+				<div>缩小</div>
+				<div>更改数据</div>
+				<div>关闭</div>
+			</div>
+			<div class="update" id="update">
+				<div>
+					<input max="10" min="0" value="3" type="number" />
+					<input max="10" min="0" value="3" type="number" />
+					<input max="10" min="0" value="3" type="number" />
+					<input max="10" min="0" value="3" type="number" />
+					<input max="10" min="0" value="3" type="number" />
+					<input max="10" min="0" value="3" type="number" />
+					<button onclick="updateBtn()">确定</button>
+					<button onclick="updateClose()">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="./class.js"></script>
+	<script type="text/javascript">
+
+		// 初始化 canvas
+		const canvasDom = document.getElementById('canvas'),
+			width = document.getElementById('container').getBoundingClientRect().width,
+			height = document.getElementById('container').getBoundingClientRect().height,
+			ctx = canvasDom.getContext('2d');
+		canvasDom.width = width;
+		canvasDom.height = height;
+		
+		const containerDom = document.getElementById('container'),
+			dragDom =  document.getElementById('drag'),
+			menuDom = document.getElementById('contextmenu'),
+			updateDom = document.getElementById('update');
+
+		const map = {
+			'折线图': Line,   // 折线图对应 class.js 中的 Line 类
+			'柱状图': Bar,   // 柱状图对应 class.js 中的 Bar 类
+		};
+
+		// 设置被拖拽元素样式
+		[...document.querySelectorAll('#drag > li')].forEach((item) => {
+			// 对需要拖拽的元素设置属性，让其允许被拖拽
+			item.draggable = true;
+			// 设置拖拽元素文本无法被选中，非必须
+			item.style.userSelect = 'none';
+		});
+
+		// 拖拽开始事件，当鼠标点中元素并且开始移动时触发
+		dragDom.ondragstart = (event) => {
+			const typeStr = event.target.getAttribute('data-value');
+			// 通过事件对象 dataTransfer 传递数据
+			event.dataTransfer.setData('type', typeStr);
+		}
+
+		// 当被拖拽元素在目标元素中，就会持续触发
+		canvasDom.ondragover = (event) => {
+			event.preventDefault();
+		}
+
+		 // 主渲染数组
+		const renderList = [];  
+
+		// 在目标元素中被松开时触发
+		canvasDom.ondrop = (event) => {
+			// 获取拖拽开始事件传递的值  折线图  柱状图
+			const type = event.dataTransfer.getData('type'),
+				// 获取相对于父元素的位置
+				[x, y] = [event.offsetX, event.offsetY],
+				// 创建对应的类实例
+				model = new map[type](x, y, 200, 100);
+			renderList.push(model);
+		}
+
+		let menuX = 0,
+			menuY = 0,
+			curItem = null;
+
+		// 右键菜单控制
+		canvasDom.oncontextmenu = (event) => {
+			event.preventDefault();
+			isShowUpdateDom('no-show');
+			const [x, y] = [event.offsetX, event.offsetY];
+			let flag = renderList.some((item) => {
+				// 调用实例 isPos 方法判断点击位置
+				let result = item.isPos(x, y);
+				if (result === null) {
+					return false;
+				} else {
+					curItem = item.isPos(x, y);
+					return true;
+				}
+			});
+			if (flag) {
+				isShowMenuDom('show', x, y);
+				menuX = x;
+				menuY = y;
+			} else {
+				isShowMenuDom('no-show');
+			}
+		}
+
+		// 菜单功能选择
+		menuDom.onclick = (event) => {
+			isShowUpdateDom('no-show');
+			let type = event.target.innerHTML;
+			if (type === '放大') {
+				curItem.zoomIn();
+				render();
+			} else if (type === '缩小') {
+				curItem.zoomOut();
+				render();
+			} else if (type === '更改数据') {
+				isShowMenuDom('no-show');
+				isShowUpdateDom('show');
+			} else if (type === '关闭') {
+				isShowMenuDom('no-show');
+			}
+		}
+
+		// 隐藏菜单
+		canvasDom.onclick = (event) => {
+			isShowMenuDom('no-show');
+		}
+
+		function updateBtn() {
+			let arr = [];
+			[...document.querySelectorAll('.update input')].some((item) => {
+				const num = item.value;
+				if (num > 10 || num <= 0) {
+					alert('数据超出范围');
+					return true;
+				}
+				arr.push(num);
+			});
+			if (arr.length === 6) {
+				curItem.data = arr;
+				render();
+			}
+		}
+
+		function updateClose() {
+			isShowUpdateDom('no-show');
+		}
+
+		// 主函数
+		function render() {
+			ctx.clearRect(0, 0, 2000, 2000);
+			renderList.forEach((item) => {
+				item.render();
+			});
+		}
+
+		function isShowMenuDom(flag, x, y) {
+			if (flag === 'no-show') {
+				menuDom.style.top = -1000 + 'px';
+			} else if (flag === 'show') {
+				menuDom.style.top = y + 'px';
+				menuDom.style.left = x + 'px';
+			}
+		}
+
+		function isShowUpdateDom(flag) {
+			if (flag === 'no-show') {
+				updateDom.style.display = 'none';
+			} else if (flag === 'show') {
+				updateDom.style.display = 'block';
+				let arr = curItem.data;
+				[...document.querySelectorAll('.update input')].forEach((item, index) => {
+					item.value = arr[index];
+				});		
+			}
+		}
+
+		// 拖拽事件，拖拽过程中会持续不断地触发
+		// dragDom.ondrag = (e) => {
+		// 	console.log('拖拽中');
+		// }
+
+		// 拖拽结束事件，松开鼠标取消拖拽时就会触发
+		// dragDom.ondragend = (e) => {
+		// 	console.log('拖拽结束');
+		// }
+
+		// 拖拽进入事件，被拖拽元素进入目标元素时触发
+		// canvasDom.ondragenter = () => {
+		// 	console.log('进入目标元素');
+		// }
+
+		// 拖拽进入事件，被拖拽元素进入目标元素时触发
+		// canvasDom.ondragenter = () => {
+		// 	console.log('进入目标元素');
+		// }
+
+		// 拖拽离开事件，被拖拽元素离开目标元素时触发
+		// canvasDom.ondragleave = () => {
+		// 	console.log('离开目标元素');
+		// }
+
+	</script>
+</body>
+</html>

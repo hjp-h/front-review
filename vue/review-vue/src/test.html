@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试代码</title>
+</head>
+<body>
+  <script type="text/javascript">
+  const obj = {
+    name:'hjp',
+    age:18
+  }
+  Object.keys(obj).forEach((key) => {
+    let val = obj[key];
+    const dep = new Dep();
+    Object.defineProperty(obj,key,{
+      get(){
+        // 用到数据的地方 都有watch监听
+        const watcher = new Watcher({key:val});
+        dep.addSub(watcher);
+        return val;
+      },
+      set(newValue){
+        val = newValue;
+        dep.notify();
+      }
+    })
+  })
+    class Dep {
+      constructor(){
+        this.subs = [];
+      }
+      addSub(Watcher){
+        this.subs.push(Watcher);
+      }
+      notify(){
+        this.subs.forEach((item) => {
+          item.update();
+        })
+      }
+    }
+    class Watcher{
+      constructor(data){
+        this.data = data;
+      }
+      update(){
+        console.log(this.data[key]+'更新了')
+      }
+    }
+  </script>
+</body>
+</html>

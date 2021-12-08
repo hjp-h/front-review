@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防抖和节流</title>
+</head>
+<body>
+    <p>防抖还是节流都是限制函数的执行次数。</p>
+    <p>防抖的非立即执行版：多次触发这个函数，然后等待n秒，如果n秒内没有再次触发，就执行这个函数。
+        防抖的立即执行版：触发事件后函数会立即执行，然后n秒内不触发事件才能继续执行函数。
+    </p>
+    <p>
+        节流是连续触发事件，但是n秒内只执行一次函数，会稀释函数的执行频率。
+    </p>
+    <input id="input1" type="text" placeholder="我是防抖">
+    <input id="submit" type="submit"></input>
+    <br>
+    <input id="input2" type="text" placeholder="我是节流">
+    <input id="submit1" type="submit"></input>
+    <script>
+        var input1 = document.getElementById("input1");
+        var input2 = document.getElementById("input2");
+        input1.addEventListener("input",debounce(inputHandler,2000),false);
+        function inputHandler(e){
+            console.log(e.target.value);
+        }
+        //#region 非立即执行版本
+        input2.addEventListener("input",throttle(inputHandler,2000),false);
+        function debounce(fn,delay=1000){
+            let timer = null;
+            return function(){
+                //多次触发，清空定时器
+                if(timer){
+                    clearTimeout(timer);
+                }
+                //等待n秒，没有再次触发就执行
+                timer = setTimeout(() => {
+                    fn.apply(this,arguments);
+                },delay);          
+            }
+        }
+        
+       //#endregion
+
+       //#region 立即执行版本
+       
+        // function debounce(fn,delay=1000){
+        //     var timer = null;
+        //     return function(){
+        //         var first = !timer;
+        //         if(timer){
+        //             clearTimeout(timer);
+        //         }
+        //         if(first){//第一次会马上执行
+        //             fn.apply(this,arguments);
+        //         } 
+        //         timer = setTimeout(() => {//开启定时器 重新赋值为第一次
+        //             timer = null;//第一次点击后的n秒内没有再次触发，就发出又是第一次点击的信号
+        //         },delay); 
+                
+        //     }
+        // }
+        
+        //#endregion
+    
+        //#region 时间戳版
+        /*
+        function throttle(fn,delay){
+            //begin为执行函数的那个时间戳
+            let begin = 0;
+            return function(){
+                let now = new Date().getTime();
+                console.log(now-begin);
+                if(now-begin>delay){
+                    fn.apply(this,arguments);
+                    begin = now;
+                }
+            }
+        }
+        */
+        //#endregion
+
+        // 计时器版本
+        function throttle(fn,delay){
+            let timer = null;
+            return function(){
+                if(!timer){
+                    fn.apply(this,arguments);
+                    timer = setTimeout(() =>{    
+                        timer = null;
+                    },delay)
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

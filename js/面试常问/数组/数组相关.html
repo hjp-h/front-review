@@ -1,0 +1,91 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>数组去重</title>
+    </head>
+    <body>
+        <script>
+            //1.判断一个对象是不是一个数组
+            //方法：Array.isArray() instanceof() Object.prototype.toString.call()
+            // let arr0 = [1,2,3];
+            // console.log(Array.isArray(arr0));
+            // console.log(arr0 instanceof Array);
+            // console.log(Object.prototype.toString.call(arr0));
+
+            //2.数组去重
+            // let arr = [1,1,3,4,2,4,7];
+            // function deleteCommon(array){
+            //     let new_arr = [];
+            //     for(let item of array){
+            //         if(new_arr.indexOf(item)==-1){
+            //             new_arr.push(item);
+            //         }
+            //     }
+            //     return new_arr;
+            // }
+            // console.log(deleteCommon(arr));
+
+            //3.冒泡排序
+            // var arr1 = [3,6,2,4,1,5];
+            // for(let i=0;i<arr1.length-1;i++){
+            //     for(let j=0;j<arr1.length-i-1;j++){
+            //         if(arr1[j]>arr1[j+1]){
+            //             let temp = arr1[j];
+            //             arr1[j] = arr1[j+1];
+            //             arr1[j+1] = temp;
+            //         }
+            //     }
+            // }
+            // console.log(arr1);
+
+            //4.sort
+            // var arr2 = [3,6,2,4,1,5];
+            // function compare(value1,value2){
+            //     return value2 - value1;//逆序
+            // }
+            // arr2.sort(compare);
+            // console.log(arr2);
+
+            //5.slice方法 返回一个新的数组，包含从start到end(不包含该元素),不改变原数组
+            // var arr3= [1,2,3,4];
+            // console.log(arr3.slice(1,3));
+            // // [].slice.apply()无论里面的参数是什么，都会返回一个数组
+            // console.log([].slice.apply("123123"));//["1","2","3","1","2","3"] 将字符串包装成String对象，就有了length的属性
+            // console.log([].slice.apply(123));//[]
+            // console.log([].slice.apply({hjp:'lqh'}));//[]
+            // // [].slice.apply(A)和 [].map.call(A)可以将A转换为数组，但是无法把A的元素放在数组里面
+            // console.log([].slice.apply(arr3));
+            // //当参数中含有length属性的时候，会返回一个长度为属性值的数组，并且会把下标小于length的元素加入到对应的位置中
+            // console.log([].slice.apply({0:"hjp",1:"lqh",2:"abc",hjp:"lqh",length:4}));//["hjp", "lqh", "abc", empty]
+            //总结：[].slice.apply(参数)  这个方法是根据参数是否有length这个属性值来定义数组的长度的
+            
+            //6[].map.call.map方法
+            //const A = new Set([1,2,3,4]);
+            //var arr4 = [1,2,3,4]
+           // console.log([].map.call(Array.from(A),o => o*o));
+
+            //7.Array.from用于将一组类数组结构转换为数组实例   Array.of用于将一组参数转换为数组实例
+
+            //8.fill(填充的元素，开始的索引，结束的索引)
+            //console.log([1,2,3].fill(6,1,3));//[1,6,6]
+
+            //9.join 将数组转换为字符串
+            //10.push()将参数加入到数组的最后，返回的是数组的长度
+            //11.pop()删除数组的最后一项，返回被删除的项
+            //12. shift()删除数组的第一项并且返回它
+            //13. unshift()在数组的开头加入任意多的值
+            //14.slice(beginIndex,endIndex)截取数组的元素，返回一个新数组
+            //15.splice() 可以进行增删改查  splice(开始的索引，删除的元素个数，元素) 改变原数组
+            /*16.不改变原数组
+            every(item => item>2);//如果每一项都是true,最后才会返回true
+            filter(item => item>2)//过滤出符合条件的每一项
+            forEach(item => item);//循环遍历数组的每一项 没有返回值
+            map(item => item*2)//对每一项进行一个操作
+            some(item => item>2)//有一项符合即可。s
+            */
+        </script>
+    </body>
+    </html>

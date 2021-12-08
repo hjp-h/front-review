@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件相关处理的方法</title>
+    <style>
+        #son{
+            width:200px;
+            height:200px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="father">
+        <ul id="ul">
+            <li class="link">列表1</li>
+            <li class="link">列表2</li>
+            <li class="link">列表3</li>
+        </ul>
+        <div id="son">
+        </div>
+    </div>
+    <button id="btn">添加li</button>
+    <div id="main" class="css js html"><span class="span1 span2">我爱JavaScript</span></div>
+    <script>
+        //不接受冒泡的事件  focus,blur,resize,load,unload,mouseenter,mouseleave
+        const ul = document.getElementById("ul");
+        const div1 = document.getElementById("father");
+        const div2 = document.getElementById("son");
+        div1.onclick=function(event){
+            console.log("div father点击了");
+
+        }
+        div2.onclick=function(event){
+            event = event || window.event;
+            event.cancelBubble = true;
+            console.log("div son点击了");
+        }
+        //事件的委托
+        ul.onclick = function(event){
+            event = event || window.event;
+            console.log(event.target);
+            if(event.target.tagName.toLowerCase()=="li"){
+                console.log("点击了li")
+            }
+        }
+        const btn = document.getElementById("btn");
+        btn.onclick = function(){
+            const li=document.createElement("li");
+            li.innerText = "新增加的列表";
+            li.setAttribute("class","link");
+            ul.appendChild(li);
+        }
+        document.getElementById("main").onclick = function(e) {
+                    console.log('e.target',e.target);
+                    console.log('e.target.id',e.target.id);
+                    console.log('e.target.tagName',e.target.tagName);
+                    console.log('e.target.nodeName',e.target.nodeName);
+                    console.log('e.target.classList',e.target.classList);
+                    console.log('e.target.className',e.target.className);
+                    console.log('e.target.innerHTML',e.target.innerHTML);
+                    console.log('e.target.innerText',e.target.innerText);
+                }
+        
+    </script>
+</body>
+</html>

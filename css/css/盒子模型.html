@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #box1{
+            width: 300px;
+            height:300px;
+            background-color: pink;
+            padding:10px;
+            border:1px solid #000;
+            margin: 10px;
+        }
+        .nav{
+            border-top:3px solid #ff8500;
+            border-bottom:1px solid #edeef0;
+            line-height: 41px;
+            height: 41px;
+            background-color: #fcfcfc;
+            color:#4c4c4c;
+        }
+        .nav a{
+            display: inline-block;
+            height:41px;
+            padding: 0 20px;
+            text-decoration: none;
+        }
+        .nav a:hover{
+            background-color: #eee;
+            color: #ff8500;
+        }
+        .border{
+            width:100px;
+            height:100px;
+            border:1px dashed red;
+            /*border的三个属性
+            border-width,border-style,border-color
+            */
+            color:green;
+        }
+        table,td{
+           border:1px solid blue;
+           border-collapse: collapse;/*把相邻的边框合并*/
+        }
+        td{
+            text-align: center;
+        }
+        .father{
+            width:200px;
+            height:200px;
+            background-color: red;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            /* border: 1px solid transparent; */
+            /* padding:1px;
+            overflow: hidden; */
+        }
+        .son{
+            width:100px;
+            height:100px;
+            background-color: blue;
+            margin-top: 20px;
+        }
+        .brother{
+            width:100px;
+            height:100px;
+            background-color: blue;
+            margin-top: 20px;
+        }
+        input[value]{
+            color:pink;
+        }
+    </style>
+</head>
+<body>
+    <div id="box1">
+
+    </div>
+    <div class="nav">
+        <a href="#">首页</a>
+        <a href="#">饿了么</a>
+        <a href="#">美团外卖</a>
+        <a href="#">爸爸去哪儿</a>
+    </div>
+    <div class="border">
+    </div>
+    <table>
+        <thead>
+            <td>公司</td>
+            <td>姓名</td>
+            <td>年龄</td>
+        </thead>
+        <tr>
+            <td>腾讯</td>
+            <td>洪佳鹏</td>
+            <td>21</td>
+        </tr>
+        <tr>
+            <td>腾讯</td>
+            <td>王红元</td>
+            <td>22</td>
+        </tr>
+    </table>
+    <div class="father">
+        <div class="son"></div>
+    </div>
+    <diV class="brother"></diV>
+    <input type="text" value="hahah">
+</body>
+</html>

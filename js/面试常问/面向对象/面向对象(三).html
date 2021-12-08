@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //回顾：构造函数、原型对象、实例的关系
+        /*
+        （1）每个构造函数都有一个原型对象，通过prototype指向该对象
+        （2）默认的原型对象有一个constructor属性，指向构造函数
+        （3）实例通过构造函数new出来，通过_proto_指向原型对象 
+        */
+
+        //原型链：
+        //假设一个构造函数的prototype属性不是一个对象，而是一个实例，
+        //此时的原型对象也包含着一个指向另一个原型的指针，如果这个指针
+        //指向的也是一个实例，那么如果这样层层递进，就构成了实例和原型的链条
+        //就是所谓的原型链
+
+        // function Person(){
+
+        // }
+        // Person.prototype = {
+            
+        // }
+        // //1.创建animal的构造函数
+        // function Animal() {
+        //     this.animalProperty = 'Animal';
+        // }
+        // //2.给Animal的原型中添加一个方法
+        // Animal.prototype.animalFunction = function(){
+        //     alert(this.animalProperty);
+        // }
+        // //3.创建Person构造函数
+        // function Person(){
+        //     this.personProperty = "Person"
+        // }
+        // //4.设置Person的原型
+        // Person.prototype = new Animal();
+        // Person.prototype.personFunction = function(){
+        //     alert(this.personProperty);
+        // }
+        // //5.创建Person的实例
+        // var person = new Person();
+        // person.animalFunction();
+        // person.personFunction();
+
+        /* 原型和实例的关系
+        1.我们希望确定原型和实例之间的关系，有两种方式
+        只要这个原型是在这个实例的原型链中出现的原型，就会返回true
+        （1）instanceof
+         (2)isPrototypeOf()
+        */
+
+        //添加新的方法
+        /*
+        一定要将新添加方法的代码，放在替换原型语句之后，否则添加方法无效，
+        因为替换了原型，之前那个原型有什么东西，已经与你无关
+        */
+
+        //原型链存在的问题
+        /*
+        （1）原型链存在的最大问题就是关于引用类型的属性
+        （2）通过上面的例子，子类的person实例继承了Animal实例中的属性animalProperty
+        （3）如果这个属性是引用类型就会出现问题
+        */
+       //1.定义Animal的构造函数
+    //    function Animal() {
+    //        this.colors = ['red','green']
+    //    }
+    //    //2.给Animal添加方法
+    //    Animal.prototype.animalFunction = function() {
+    //        alert(this.colors);
+    //    }
+    //    //3.定义person的构造函数
+    //    function Person() {
+    //        this.personProperty = "Person";
+    //    }
+    //    //4.给Person赋值新的原型对象
+    //    Person.prototype = new Animal();
+    //    //5.给Person添加方法
+    //    Person.prototype.personFunction = function() {
+    //        alert(this.personProperty);
+    //    }
+    //    //6.创建Person对象，并且调用方法
+    //    var person1 = new Person();
+    //    var person2 = new Person();
+    //    console.log(person1.colors);
+    //    console.log(person2.colors);
+    //    person1.colors.push('blue');
+    //    console.log(person1.colors);
+    //    console.log(person2.colors);
+       /*
+       每一个person实例的原型指向的都是同一个Animal实例
+       所以改变的是同一个数组
+       */
+
+       //经典继承（构造继承）
+       //在子类型构造函数的内部调用父类型的构造函数 call()  apply()
+    //    function Animal() {
+    //        this.colors = ['red','green'];
+    //        this.HelloAnimal = function() {
+    //            alert("Hello Animal");
+    //        }
+    //    }
+    //    Animal.prototype.ppp = function() {
+    //        alert("我是Animal原型中的方法！");
+    //    } 
+    //    //创建person的构造函数
+    //    function Person() {
+    //        //继承Animal属性
+    //        Animal.call(this);
+    //        /*
+    //        我们通过在Person构造函数中, 使用call函数, 将this传递进去.
+    //         这个时候, 当Animal中有相关属性初始化时, 就会在this对象上进行初始化操作.
+    //         这样就实现了类似于继承Animal属性的效果.
+    //        */
+    //        this.name = "HJP";
+    //    }
+    //    //创建Person对象
+    //    var person1 = new Person();
+    //    person1.HelloAnimal();
+    //    person1.ppp();//报错 无法继承父类的原型
+    //    var person2 = new Person()
+
+    //    console.log(person1.colors) // red,greem
+    //    console.log(person2.colors) // red,greem
+    //    person1.colors.push("blue")
+    //    console.log(person1.colors) // red,green,blue
+    //    console.log(person2.colors) // red,green
+
+       //传递参数
+    //    function Animal(age) {
+    //        this.age = age;
+    //    }
+    //    //创建Person构造函数
+    //    function Person(name,age) {
+    //        Animal.call(this,age);
+    //        this.name = name;
+    //    }
+    //    // 创建Person对象
+    //     var person = new Person("Coderwhy", 18)
+    //     alert(person.name)
+    //     alert(person.age)
+        
+        //经典继承的问题
+        //只能继承父类的实例属性和方法，不能继承原型属性/方法
+
+        //回顾原型链和经典继承
+        /*
+        （1）原型链存在的问题是引用类型的问题和无法传参，但是父类原型可以被继承
+        （2）经典继承是引用类型没问题，也可以传递参数，但是父类原型无法被继承
+        （3）两者结合，组合继承
+        */
+
+        // 组合继承：原型继承+构造函数继承
+        //组合继承
+        // 1.Animal构造函数
+        function Animal(age) {
+            this.age = age;
+            this.colors = ['red','green']
+        }
+        //2.给Animal的原型添加方法
+        Animal.prototype.animalFunction = function() {
+            alert("Hello Animal");
+        }
+        //3.Person构造函数
+        function Person(name,age) {
+            Animal.call(this,age);//继承了Animal构造函数所有的东西
+            this.name = name;
+        }
+        //给Person的原型对象重新赋值
+        Person.prototype = new Animal(0)
+        //4.给Person的原型对象重新赋值
+        Person.prototype.personFunction = function() {
+            alert("Hello Person");
+        }
+
+        // 2.验证和使用的代码
+        // 2.1.创建Person对象
+        var person1 = new Person("Coderwhy", 18)
+        var person2 = new Person("Kobe", 30)
+
+        // 2.2.验证属性
+        alert(person1.name + "-" + person1.age) // Coderwhy,18
+        alert(person2.name + "-" + person2.age) // Kobe,30
+
+        // 2.3.验证方法的调用
+        person1.animalFunction() // Hello Animal
+        person1.personFunction() // Hello Person
+
+        // 2.4.验证引用属性的问题
+        person1.colors.push("blue")
+        alert(person1.colors) // red,green,blue
+        alert(person2.colors) // red,green
+        
+
+        //组合继承的问题
+        /*
+        组合继承最大的问题就是无论在什么情况下, 都会调用两次父类构造函数.
+        一次在创建子类原型的时候
+        另一次在子类构造函数内部(也就是每次创建子类实例的时候).
+        另外, 如果你仔细按照我的流程走了上面的每一个步骤, 你会发现: 所有的子类实例事实上会拥有两份父类的属性
+        一份在当前的实例自己里面(也就是person本身的), 另一份在子类对应的原型对象中(也就是person.protoytpe里面)
+        当然, 这两份属性我们无需担心访问出现问题, 因为默认一定是访问实例本身这一部分的.
+        */
+    </script>
+</body>
+</html>

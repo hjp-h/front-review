@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 第一题
+    //    let a = [3,15,8,29,102,22]
+    //    let a = a.sort(function(a,b){return b-a});
+    //    console.log(a);
+
+       // 第二题
+        // let arr = [{name:'检查项一',type:'0'},{name:'检查项二',type:'1'},
+        //         {name:'检查项三',type:'1'},
+        //         {name:'检查项三',type:'0'}]
+        // function myType (arr){
+        //     let obj = {}
+        //     arr.forEach(item => {
+        //         if(!obj[item.type]){
+        //             obj[item.type] = [item]
+        //         }else{
+        //             obj[item.type].push(item);
+        //         }    
+        //     })
+        //     return obj
+        // }
+        
+        // console.log(myType(arr));
+
+        var a = {n:1};
+        var b = a;// b:{n:1}
+        a.x  = a = {n:2};
+        console.log(a.x) //undefined  为什么这里是undefined
+        console.log(b.x) // {n:2}
+
+
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>原型及继承的总结</title>
+</head>
+<body>
+  <script>
+    /*
+    1.什么是构造函数？
+      构造函数的本质就是一个函数，只不过定义时类名要大写，调用时要用new关键字。
+      常常用来定义一些属性和方法。
+
+    2.什么是原型？
+      每一个构造函数都有一个prototype属性，这个属性指向一个对象，这个对象就是
+      原型对象。
+
+    3.什么是原型链？
+      当构造函数的prototype指向的那个对象是一个实例，而这个实例又有它的原型
+      对象，当这个原型对象又是个实例时，层层递进，构成了一条原型链。
+
+    4.查找实例身上的属性或者方法的过程？
+      首先从实例的本身上查找（本身+构造函数），查找不到再去原型上查找，查找不到
+      再通过原型链一层一层的网上找。
+    */
+
+    // 5.继承
+    // 5.1 继承的目的：重复利用一个对象的属性和方法
+    // 5.2 继承的种类：原型链继承，构造函数继承，组合继承，原型式继承
+    // ，寄生继承，寄生组合继承
+
+    // 5.3原型链继承
+    function Father() {
+      this.name = 'hjp'
+      this.property = {money:1000,car:'bmw'}
+    }
+    Father.prototype.sayHello = function () {
+      console.log('我是爸爸')
+    }
+    function Son(){
+
+    }
+    // 构造函数的原型是个实例 符合原型链
+    Son.prototype = new Father();
+    // 创建子类的实例
+    const son1 = new Son();
+    son1.property.car = "benchi"
+    son1.name = 'lqh'
+    // 通过原型链继承父类的方法
+    // son1.sayHello();
+    const son2 = new Son();
+    console.log('son2',son2.property)
+    console.log('son2',son2.name)
+    /*
+      原型链存在的问题：1.无法传参 2.共享引用类型（（父类和原型都会修改）一个实例修改，其他实例也受影响）
+    */
+
+    // 5.4 构造函数继承
+    // function Father(name) {
+    //   this.name = name;
+    // }
+
+    // function Son(name) {
+    //   // 相当于把Father中的属性和方法复制了一遍
+    //   Father.call(this,name);
+    // }
+   
+    // const son = new Son('hjp');
+    // console.log(son.name);
+    /*
+    构造函数继承解决的问题：1.可以传参 2.不会共享引用类型
+    存在的问题：无法继承父类型的prototype
+    */
+
+    // 5.5 组合继承（经典继承） 构造函数和原型链的组合
+    // function Father(name='baba') {
+    //   this.name = name;
+    // }
+
+    // Father.prototype.sayHello = function() {
+    //   console.log("我是爸爸")
+    // }
+
+    // function Son(name) {
+    //   // 相当于把Father中的属性和方法复制了一遍
+    //   Father.call(this,name); //构造函数继承
+    // }
+    // Son.prototype = new Father();//原型链继承
+    // const son = new Son('hjp');
+
+    // console.log(son.name);   
+    // son.sayHello();
+
+    /*
+    组合继承的问题：1.调用两次父类的构造函数 2.子类中拥有两份分类的属性和方法
+    */
+
+    // 5.5 原型继承
+    // function object(o) {
+    //   // 创建构造函数
+    //   const F = function () {};
+    //   // 让o成为F的原型
+    //   F.prototype = o;
+    //   // 返回F的实例
+    //   return new F();
+    // }
+    // const father = {
+    //   name:['hjp','lqh']
+    // }
+
+    // const son = object(father);
+    // const son1 = object(father);
+    // // es5新增的object.create()
+    // const son2 = Object.create(father);
+    // son.name.push('hahah')
+    // console.log(son1.name,son2.name) //["hjp", "lqh", "hahah"]
+
+    /*
+    原型继承存在的问题：仍然存在引用类型共享的问题
+    */
+
+    // 5.6 寄生继承
+    // 寄生继承实际上就是对原型继承的二次封装，原型模式和工厂模式的一种结合，增强对象
+    // 原型继承
+    // function object(o) {
+    //   const F = function () {};
+    //   F.prototype = o;
+    //   return new F();
+    // }
+    // // 工厂模式再次增强
+    // function createAnother(o) {
+    //   // 创建这个实例
+    //   const clone = object(o);// 将object函数寄生在createAnother里面
+    //   // 给这个实例增加新的方法
+    //   clone.sayHello = function() {
+    //     console.log('Hello createAnother')
+    //   }
+    //   return clone;
+    // }
+
+    /*
+    寄生继承仍然存在引用类型共享的问题 函数无法复用 每次都定义了新的函数
+    */
+
+    // 5.7 寄生组合继承
+    // function object(o) {
+    //   const F = function(){};
+    //   F.prototype = o;
+    //   return new F();
+    // }
+    // function inheritePrototype(subType,superType) {
+    //   // 利用prototype作为中间的媒介 联通subType和superType 的关系
+    //   const prototype = object(superType.prototype);
+    //   prototype.constructor = subType;
+    //   subType.prototype = prototype;
+    // }
+    // function Father() {
+    //   this.estate = ['money','car','house']
+    // }
+    // Father.prototype = {
+    //   property:['orange'],
+    //   sayHello(){
+    //     console.log('Father sayHello')
+    //   }
+    // }
+    // function Son() {
+    //   Father.call(this);
+    // }
+    // inheritePrototype(Son,Father);
+    // const son = new Son();
+    // console.log(son.estate);
+    // console.log(son.property);
+    // console.log(son.property);
+    // const son1 = new Son();
+    // console.log(son1.property); // 不会被其他的实例所影响
+    // son.sayHello();
+  </script>
+</body>
+</html>

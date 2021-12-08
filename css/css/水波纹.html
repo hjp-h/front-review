@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>水波纹</title>
+  <style>
+    html, body {
+      background-color: #000;
+    }
+    .dotted{
+      position: relative;
+      width:8px;
+      height: 8px;
+      margin:300px auto;
+      background-color: #09f;
+      border-radius: 50%;
+    }
+    /* 定义动画的本体 */
+    .dotted div[class^="wave"]{
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      width:8px;
+      height: 8px;
+      box-shadow: 0 0 12px #009dfd;
+      border-radius: 50%;
+      animation: wave 3s linear infinite;
+    }
+    .dotted .wave2{
+      animation-delay: 0.4s !important;
+    }
+    .dotted .wave3{
+      animation-delay: 0.8s !important;
+    }
+    @keyframes wave {
+      0% {
+      }
+      70% {
+        /* 用scale box-shadow也会被变大 */
+        width:300px;
+        height: 300px;
+        opacity: 1;
+      }
+      100% {
+        width: 500px;
+        height: 500px;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dotted">
+    <div class="wave1"></div>
+    <div class="wave2"></div>
+    <div class="wave3"></div>
+  </div>
+</body>
+</html>

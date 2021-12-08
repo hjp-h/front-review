@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>css动画</title>
+  <style>
+    /*
+      trasnform 变形
+      属性：rotate(旋转单位 deg)：
+              设置转换的中心点 transform-origin: x y
+              x,y可以是百分比（默认是50%，50%） （以元素的左上角进行定位）
+              x,y也可以是像素（px,px）
+            translate(移动：不影响其他的盒子 独立的RenderLayout) 
+              translate(x,y) 常常结合定位使用
+            scale(放大 缩小 不影响其他的盒子 独立的RenderLayout)
+              scale(x,y)
+      */
+    #box {
+      height:100px;
+      width:100px;
+      background: green;
+      /* 
+      过渡属性写在本身上 谁做过渡给谁加
+      transition 过渡
+        属性：要过渡的属性 花费的时间 运动曲线 何时开始
+       */
+      transition:all 1s ,ease-in 5s;
+    }
+    #box:hover{
+      transform:rotate(180deg) scale(.5,.5)
+    }
+
+    #box1{
+      width:300px;
+      height: 300px;
+      border:1px solid pink;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    /* 先写好伪元素的样式 */
+    #box1::before{
+      content:"洪佳鹏真帅";
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-color: pink;
+      transform: rotate(180deg);
+      /* 设置旋转的 */
+      transform-origin:left bottom;
+      transition: all 1s;
+    }
+    /* 再写hover之后伪元素的样式 注意这里的写法先hover再伪元素 */
+    #box1:hover::before{
+      transform: rotate(0deg);
+    }
+
+    #box2{
+      width:300px;
+      height: 300px;
+      border:1px solid pink;
+      margin-top: 10px;
+      background-color: green;
+      transition: all 1s;
+      /*设置转换的中心点*/
+      /* transform-origin: left bottom; */
+    }
+    #box2:hover{
+      transform: scale(2);
+    }
+  </style>
+</head>
+<body>
+  <div id="box"></div>
+  <div id="box1"></div>
+  <div id="box2"></div>
+  
+</body>
+</html>

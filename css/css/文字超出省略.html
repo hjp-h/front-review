@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文字超出省略</title>
+  <style>
+    .multiline-ellipsis{
+      width:100px;
+      overflow:hidden;
+      /* 允许在单词内换行 */
+      word-break:break-all;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+    }
+  </style>
+</head>
+<body>
+  <div class="multiline-ellipsis">
+    情人节快乐！天下有情人终成眷属！长长久久，白头偕老！
+  </div>
+</body>
+</html>

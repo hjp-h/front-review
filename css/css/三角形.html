@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        #div1{
+            width:295px;
+            height: 25px;
+            position:relative;
+            border:1px solid rgb(15, 9, 9);
+        }
+        #div1::after{
+            content:'';
+            width:8px;
+            height:8px;
+            position: absolute;
+            top:5px;
+            right:10px;
+            border-right: 1px solid rgb(15, 9, 9);
+            border-bottom: 1px solid rgb(15, 9, 9);
+            transform: rotate(-45deg);
+            transition: all 0.5s;
+        }
+        #div1:hover::after{
+            transform: rotate(45deg);
+        }
+        .triangle{
+            width:0px;
+            height:0px;
+            border-top: 100px solid red;
+            border-left:50px solid transparent;
+            border-right:50px solid transparent;
+        }
+        .test {
+            width: 50px;
+            height: 50px;
+            border: 50px solid;
+            border-color: orange blue red green;
+        }
+    </style>
+</head>
+<body>
+    <!-- 一个带有下拉三角的div -->
+    <div id="div1"></div>
+    <div class="triangle"></div>
+    <div class="test"></div>
+     <!-- 
+        边框在只有1px等很小的情况下，以为就是个长方形
+        随着边框越来越粗，就接近三角形，直到里面的content为0
+     -->
+</body>
+</html>

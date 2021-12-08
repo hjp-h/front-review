@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清除浮动</title>
+    <style>
+        .parent{
+            /*方式一：给父元素设置宽高*/
+            /* width:200px;
+            height:400px; */
+            background-color: red;
+            /* 方式四：给父元素添加overflow属性 */
+            /* overflow: hidden; */
+        }
+        .parent::after{
+            /*方式二：通过伪元素占位*/
+            content:'';
+            display:block;
+            clear:both;
+        }
+
+        .son{
+            width:100px;
+            height:200px;
+            background-color: blue;
+            float:left;
+        }   
+    </style>
+</head>
+<body>
+    <div class="parent">
+        <div class="son"></div>
+        <div style="background-color:black" class="son"></div>
+        <!-- 在浮动元素的后面 加一个div 设置样式clear:both -->
+        <!-- <div style="clear:both"></div> -->
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+            }
+            body {
+                padding: 100px;
+            }
+            .person {
+                border: 2px solid #1296db;
+                border-width: 0 0 2px 2px;
+                border-radius: 0 0 0 8px;
+            }
+            p {
+                transform: translate(10px, 10px);
+                background-color: #fff;
+            }
+            .detail {
+                padding-left: 12px;
+                border-left: 2px solid #1296db;
+            }
+            .detail:last-of-type {
+                border-width: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <section>
+            <header>销售总监</header>
+            <div class="person">
+                <p>杨文健</p>
+            </div>
+            <div class="detail">
+                <div class="person">
+                    <p>关良安</p>
+                </div>
+                <div class="person">
+                    <p>黄兆林</p>
+                </div>
+            </div>
+            <div class="person">
+                <p>杨文健</p>
+            </div>
+            <div class="detail">
+                <div class="person">
+                    <p>关良安</p>
+                </div>
+                <div class="person">
+                    <p>黄兆林</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin-top: 30px">
+            <header>外部销售</header>
+            <div class="person">
+                <p>庞赐康</p>
+            </div>
+            <div class="detail">
+                <div class="person">
+                    <p>lhm</p>
+                </div>
+                <div class="detail">
+                    <div class="person">
+                        <p>黄志敏</p>
+                    </div>
+                    <div class="detail">
+                        <div class="person">
+                            <p>李雄辉</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
